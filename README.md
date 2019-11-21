@@ -10,8 +10,8 @@ Updated it to color weekends and weekdays and also added weekdays to the y-axis
 ## Step 0: This works best in the anaconda - spyder setup but good luck to however you want to use it
 anaconda python datascience package thing can be found here: https://www.anaconda.com/
 
-## Step 1: Run: "SIGN IN" portion of the code
-Automatic login is not implemented yet and might actually be preferable, user-safety wise. Once the selenium web driver is active the rest of the code will execute fine.
+## Step 1: Run: "SIGN IN" portion of the code and then log into your garmin account manually.
+Automatic login is not implemented yet and might actually be preferable, user-safety wise. Once the selenium web driver is active the rest of the code will execute fine. When you're logged in it will be able to scrape the dates based on the urls that fit each day.
 
 ## Step 2: Resize the chromium driver window until the width is as small as possible. 
 The XPATH to the data will change if the sidemenu is showing and you will scrape a whole bunch of NaNs. So resize it so it has the width of a mobile website.
