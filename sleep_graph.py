@@ -52,8 +52,8 @@ if __name__ == "__main__":
     time_wake_list = []
     
     #input date range that you want to graph (Year - Month - Day)
-    date_start = ("2019-10-23")
-    date_end = ("2019-11-16")
+    date_start = ("2019-11-11")
+    date_end = ("2019-11-20")
     
     #convert start and end to datetime to calculate days in between
     datetime_start = datetime.datetime.strptime(date_start,"%Y-%m-%d")
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     url_list = []
     date_list = [] # Will use this later for the plot
-
+    datedt_list = []
     for i in range(delta+1):
         #Create list urls to scrape over to get the sleep and wake times
         new_date = datetime_start + datetime.timedelta(days=i)
@@ -70,6 +70,7 @@ if __name__ == "__main__":
         url = "https://connect.garmin.com/modern/sleep/{}".format(url_date)
         url_list.append(url)
         date_list.append(url_date)
+        datedt_list.append(new_date)
         
     
     for url in url_list:
@@ -144,17 +145,50 @@ if __name__ == "__main__":
     mean_wake = np.nanmean(timedt_wake_list_h) 
     mean_sleep = np.nanmean(timedt_sleep_list_h)
     
+    #Create colour code for the days.
+    day_list = [x.weekday() for x in datedt_list]
+    weekday_color= "dodgerblue"
+    weekend_color="steelblue"
     
+    day_color_list = []
+    for day in day_list:
+        if day < 5:
+            day_color_list.append(weekday_color)
+        else:
+            day_color_list.append(weekend_color)
+    #Add daynames to a list
+    day_name_list= []
+    for day in day_list:
+        if day == 0:
+            day_name_list.append("Monday")
+        elif day ==1:
+            day_name_list.append("Tuesday")
+        elif day ==2:
+            day_name_list.append("Wednesday")
+        elif day ==3:
+            day_name_list.append("Thursday")
+        elif day ==4:
+            day_name_list.append("Friday")
+        elif day ==5:
+            day_name_list.append("Saturday")
+        elif day ==6:
+            day_name_list.append("Sunday")
+            
+    #Create string to use when plotting
+    day_date_string= []
+    for i in range(len(day_name_list)):
+        day_date_string.append("{} {}".format(day_name_list[i],date_list[i]))
+        
 #--------------------PLOT DATA ------------------------------------------------
-    fig = plt.figure(figsize = (10,0.4*len(timedt_sleep_list_h))) #Will chang ethe Y size of the graph based on the amount of data
+    fig = plt.figure(figsize = (12,0.4*len(timedt_sleep_list_h))) #Will chang ethe Y size of the graph based on the amount of data
     sleep_lines= plt.hlines(xmin = timedt_sleep_list_h, # Plots bar during sleep
                xmax = timedt_wake_list_h, 
                y = [x for x in range(len(timedt_sleep_list_h))],
-               color="dodgerblue", linewidth=18)
-    sleep_average, = plt.plot(rolling_average(5,timedt_sleep_list_h), # Plots rolling average of sleep time over n days, n = 5
+               color=day_color_list, linewidth=18)
+    sleep_average, = plt.plot(rolling_average(3,timedt_sleep_list_h), # Plots rolling average of sleep time over n days, n = 5
              [x for x in range(len(timedt_sleep_list_h))],
              color="navy")
-    wake_average, = plt.plot(rolling_average(5,timedt_wake_list_h), # Plots rolling average of wake time over n days, n = 5
+    wake_average, = plt.plot(rolling_average(3,timedt_wake_list_h), # Plots rolling average of wake time over n days, n = 5
              [x for x in range(len(timedt_sleep_list_h))],
              color="navy")
     plt.grid(axis='x') # Plots grid corresponding to hours
@@ -170,7 +204,7 @@ if __name__ == "__main__":
                ymax = len(timedt_sleep_list_h)-1,
                color="red")
     plt.yticks(ticks = np.arange(len(timedt_sleep_list_h)), # Sets dates as Y_ticks
-               labels = date_list)
+               labels = day_date_string)
     plt.ylim(len(timedt_sleep_list_h),-1)
     hour_labels = ["22:00",
                    "23:00",
@@ -191,5 +225,8 @@ if __name__ == "__main__":
                labels = hour_labels,
                rotation=0 )
     plt.legend((sleep_lines,sleep_ideal, sleep_average, wake_ideal,wake_average),
-               ('sleep','ideal sleep: 00:00','average sleep (5 days)','ideal wake: 7:00','average wake (5 days)'))
-    plt.title("SLEEP GRAPH - Based on Garmin tracking")
+               ('sleep','ideal sleep: 00:00','average sleep (3 days)','ideal wake: 7:00','average wake (3 days)'),
+               fontsize=8,
+               loc="lower right")
+    plt.title("SLEEP GRAPH ")
+    
