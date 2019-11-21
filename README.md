@@ -4,6 +4,9 @@ Scrapes sleep data (sleep time and wake time) from Garmin website and graphs the
 ![sleep graph example](https://github.com/Dopamineral/sleep_graph/blob/master/example.png)
 
 
+Updated it to color weekends and weekdays and also added weekdays to the y-axis
+![sleep graph example with colour and weekdays](https://github.com/Dopamineral/sleep_graph/blob/master/example_colour_days.png)
+
 ## Step 0: This works best in the anaconda - spyder setup but good luck to however you want to use it
 anaconda python datascience package thing can be found here: https://www.anaconda.com/
 
